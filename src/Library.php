@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace gijsbos\loggins\Library;
+namespace gijsbos\Logging\Library;
 
-use gijsbos\logging\Classes\LogEnabledClass;
+use gijsbos\Logging\Classes\LogEnabledClass;
 
 function write_log_to_file(string $message, string $type)
 {

@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace gijsbos\logging\Classes;
+namespace gijsbos\Logging\Classes;
 
 /**
  * LogEnabledClass
