@@ -66,7 +66,9 @@ function write_log(string $message, string $type = "")
                 strlen($logLevel) > 0 // info or debug is set
                 &&
                 (
-                    $logLevel == "debug" || ($logLevel == "info" && $type == "info") // Log all when debug, log info when info
+                    ($logLevel == "debug" && ($type == "debug" || $type == "info"))
+                    ||
+                    ($logLevel == "info" && $type == "info") // Log all when debug, log info when info
                 )
             )
         )
