@@ -1,0 +1,27 @@
+{
+    "name": "gijsbos/logging",
+    "description": "PHP Logging",
+    "keywords": [
+        "logging"
+    ],
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Gijs and contributors",
+            "homepage": "https://github.com/gijsbos/logging/graphs/contributors"
+        }
+    ],
+    "require-dev": {
+        "phpunit/phpunit": "^5.7 || ^9.0"
+    },
+    "autoload": {
+        "files": ["src/Library.php"],
+        "psr-4": {
+            "gijsbos\\logging\\": "src/"
+        }
+    },
+    "require": {
+        "gijsbos/extfuncs": "^1.0"
+    }
+}
