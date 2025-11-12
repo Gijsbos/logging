@@ -4,6 +4,9 @@ declare(strict_types=1);
 namespace gijsbos\Logging\Library;
 
 use gijsbos\Logging\Classes\LogEnabledClass;
+use LogicException;
+use ReflectionMethod;
+use ReflectionParameter;
 
 function write_log_to_file(string $message, string $type)
 {
@@ -19,16 +22,40 @@ function extract_object_log_params()
 {
     $params = [];
 
-    $backtraces = array_slice(debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS|DEBUG_BACKTRACE_PROVIDE_OBJECT, 4), 3);
+    $backtraces = array_slice(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT, 4), 3);
 
     if(count($backtraces))
     {
         $backtrace = reset($backtraces);
 
-        if(is_object($object = $backtrace["object"]))
-        {   
-            $calledClassArray = explode("\\", $className = get_class($object));
+        $object = @$backtrace["object"];
 
+        $class = $backtrace["class"];
+        $callingClassArray = explode("\\", $class);
+        $callingClass = end($callingClassArray);
+        $logLevel = null;
+        $logOutput = null;
+        
+        if($object === null)
+        {
+            $function = $backtrace["function"];
+            $className = $backtrace["class"];
+            $reflection = new ReflectionMethod($className, $function);
+
+            $verbose = array_filter($reflection->getParameters(), fn($p) => $p->getName() == "verbose");
+
+            if(($verbose = reset($verbose)) instanceof ReflectionParameter === false)
+                throw new LogicException("Static method '$function' cannot use logging without the 'verbose' parameter");
+
+            $verbose = @$backtrace["args"]["verbose"] ?? ($verbose->isDefaultValueAvailable() ? $verbose->getDefaultValue() : false);
+
+            if($verbose)
+            {
+                $logLevel = "info";
+            }
+        }
+        else if(is_object($backtrace["object"]))
+        {
             if(is_subclass_of($object, LogEnabledClass::class))
             {
                 if(
@@ -36,13 +63,16 @@ function extract_object_log_params()
                     ||
                     empty($object->logOutput) && (!is_string($object->logOutput) && strlen($object->logOutput) == 0)
                 )
-                    throw new \RuntimeException("LogEnabledClass not initialized at file " . $className);
+                    throw new \RuntimeException("LogEnabledClass not initialized at file " . $class);
 
-                $params["callingClass"] = end($calledClassArray);
-                $params["logLevel"] = $object->logLevel;
-                $params["logOutput"] = $object->logOutput;                    
+                $logLevel = $object->logLevel;
+                $logOutput = $object->logOutput;
             }
         }
+
+        $params["callingClass"] = $callingClass;
+        $params["logLevel"] = $logLevel;
+        $params["logOutput"] = $logOutput;
     }
 
     return $params;
