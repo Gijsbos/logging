@@ -8,9 +8,9 @@ namespace gijsbos\Logging\Classes;
  */
 class LogEnabledClass
 {
-    private string $logLevel;
-    private string $logOutput;
-    private null|bool $verbose; // Null, no prefs, Bool = prefs
+    public string $logLevel;
+    public string $logOutput;
+    public null|bool $verbose; // Null, no prefs, Bool = prefs
 
     public function __construct(array $opts = [])
     {
