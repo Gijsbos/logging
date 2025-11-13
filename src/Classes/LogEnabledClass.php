@@ -11,6 +11,37 @@ class LogEnabledClass
     public function __construct(public string $logLevel = "", public string $logOutput = "file")
     { }
 
+    public function getLogLevel()
+    {
+        return $this->logLevel;
+    }
+
+    public function getLogOutput()
+    {
+        return $this->logOutput;
+    }
+
+    public function setVerbose(bool $verbose)
+    {
+        if($verbose)
+        {
+            $this->logLevel = "info";
+            $this->logOutput = "console";
+        }
+        else
+        {
+            $this->logLevel = "";
+            $this->logOutput = "";
+        }
+    }
+
+    public function inheritLogSettingsFrom(LogEnabledClass $source)
+    {
+        $this->setLogLevel($source->getLogLevel());
+        $this->setLogOutput($source->getLogOutput());
+        return $this;
+    }
+
     public function passOnLogSettings(LogEnabledClass $target)
     {
         $target->setLogLevel($this->logLevel);
