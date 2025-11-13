@@ -125,9 +125,19 @@ function log_info(string $message)
     write_log($message, "info");
 }
 
+function log_infof(string $message, ...$params)
+{
+    write_log(sprintf($message, ...$params), "info");
+}
+
 function log_request(string $message)
 {
     write_log($message, "request");
+}
+
+function log_requestf(string $message, ...$params)
+{
+    write_log(sprintf($message, ...$params), "request");
 }
 
 function log_debug(string $message)
@@ -135,7 +145,17 @@ function log_debug(string $message)
     write_log($message, "debug");
 }
 
+function log_debugf(string $message, ...$params)
+{
+    write_log(sprintf($message, ...$params), "debug");
+}
+
 function log_error(string $message)
 {
     write_log($message, "error");
+}
+
+function log_errorf(string $message, ...$params)
+{
+    write_log(sprintf($message, ...$params), "error");
 }
