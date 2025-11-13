@@ -33,6 +33,7 @@ class LogEnabledClass
             $this->logLevel = "";
             $this->logOutput = "";
         }
+        return $this;
     }
 
     public function inheritLogSettingsFrom(LogEnabledClass $source)
