@@ -11,6 +11,13 @@ class LogEnabledClass
     public function __construct(public string $logLevel = "", public string $logOutput = "file")
     { }
 
+    public function passOnLogSettings(LogEnabledClass $target)
+    {
+        $target->setLogLevel($this->logLevel);
+        $target->setLogOutput($this->logOutput);
+        return $this;
+    }
+
     public function setLogLevel(string $logLevel)
     {
         $this->logLevel = $logLevel;
