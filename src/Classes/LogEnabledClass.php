@@ -11,15 +11,20 @@ class LogEnabledClass
     public string $logLevel;
     public string $logOutput;
     public null|bool $verbose; // Null, no prefs, Bool = prefs
+    public null|bool $debug; // Null, no prefs, Bool = prefs
 
     public function __construct(array $opts = [])
     {
         $this->logLevel = @$opts["logLevel"] ?? "";
         $this->logOutput = @$opts["logOutput"] ?? "file";
         $this->verbose = @$opts["verbose"];
+        $this->debug = @$opts["debug"];
 
         if(is_bool($this->verbose))
             $this->setVerbose($this->verbose);
+
+        if(is_bool($this->debug))
+            $this->setDebug($this->verbose);
     }
 
     public function getLogLevel()
@@ -37,6 +42,21 @@ class LogEnabledClass
         if($verbose)
         {
             $this->logLevel = "info";
+            $this->logOutput = "console";
+        }
+        else
+        {
+            $this->logLevel = "";
+            $this->logOutput = "";
+        }
+        return $this;
+    }
+
+    public function setDebug(bool $debug)
+    {
+        if($debug)
+        {
+            $this->logLevel = "debug";
             $this->logOutput = "console";
         }
         else
