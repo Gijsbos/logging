@@ -37,33 +37,41 @@ class LogEnabledClass
         return $this->logOutput;
     }
 
-    public function setVerbose(bool $verbose)
+    public function setVerbose(?bool $verbose = null)
     {
-        if($verbose)
+        if(is_bool($verbose))
         {
-            $this->logLevel = "info";
-            $this->logOutput = "console";
+            if($verbose)
+            {
+                $this->logLevel = "info";
+                $this->logOutput = "console";
+            }
+            else
+            {
+                $this->logLevel = "";
+                $this->logOutput = "";
+            }
         }
-        else
-        {
-            $this->logLevel = "";
-            $this->logOutput = "";
-        }
+        
         return $this;
     }
 
-    public function setDebug(bool $debug)
+    public function setDebug(?bool $debug = null)
     {
-        if($debug)
+        if(is_bool($debug))
         {
-            $this->logLevel = "debug";
-            $this->logOutput = "console";
+            if($debug)
+            {
+                $this->logLevel = "debug";
+                $this->logOutput = "console";
+            }
+            else
+            {
+                $this->logLevel = "";
+                $this->logOutput = "";
+            }
         }
-        else
-        {
-            $this->logLevel = "";
-            $this->logOutput = "";
-        }
+        
         return $this;
     }
 
