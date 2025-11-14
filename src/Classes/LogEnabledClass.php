@@ -24,7 +24,7 @@ class LogEnabledClass
             $this->setVerbose($this->verbose);
 
         if(is_bool($this->debug))
-            $this->setDebug($this->verbose);
+            $this->setDebug($this->debug);
     }
 
     public function getLogLevel()
