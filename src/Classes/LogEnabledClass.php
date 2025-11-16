@@ -37,6 +37,16 @@ class LogEnabledClass
         return $this->logOutput;
     }
 
+    public function isVerbose()
+    {
+        return $this->verbose === true;
+    }
+
+    public function isDebug()
+    {
+        return $this->debug === true;
+    }
+
     public function setVerbose(?bool $verbose = null)
     {
         if(is_bool($verbose))
