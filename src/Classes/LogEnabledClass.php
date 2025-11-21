@@ -8,6 +8,7 @@ namespace gijsbos\Logging\Classes;
  */
 class LogEnabledClass
 {
+    public array $opts;
     public string $logLevel;
     public string $logOutput;
     public null|bool $verbose; // Null, no prefs, Bool = prefs
@@ -15,6 +16,7 @@ class LogEnabledClass
 
     public function __construct(array $opts = [])
     {
+        $this->opts = $opts;
         $this->logLevel = @$opts["logLevel"] ?? "";
         $this->logOutput = @$opts["logOutput"] ?? "file";
         $this->verbose = @$opts["verbose"];
@@ -25,6 +27,11 @@ class LogEnabledClass
 
         if(is_bool($this->debug))
             $this->setDebug($this->debug);
+    }
+
+    public function getOpts()
+    {
+        return $this->opts;
     }
 
     public function getLogLevel()
