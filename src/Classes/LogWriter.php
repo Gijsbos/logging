@@ -65,10 +65,23 @@ class LogWriter
 
             $verbose = array_filter($reflection->getParameters(), fn($p) => $p->getName() == "verbose");
 
-            if(($verbose = reset($verbose)) instanceof ReflectionParameter === false)
-                throw new LogicException("Static method '$function' cannot use logging without the 'verbose' parameter");
+            if(($verboseParam = reset($verbose)) instanceof ReflectionParameter === false)
+            {
+                $opts = array_filter($reflection->getParameters(), fn($p) => $p->getName() == "opts");
 
-            $verbose = @$trace["args"]["verbose"] ?? ($verbose->isDefaultValueAvailable() ? $verbose->getDefaultValue() : false);
+                if(($optsParam = reset($opts)) instanceof ReflectionParameter === false)
+                {
+                    throw new LogicException("Static method '$function' cannot use logging without the 'verbose' or 'opts' parameter");
+                }
+                else
+                {
+                    $verbose = @$trace["args"][$optsParam->getPosition()]["verbose"] ?? false;
+                }
+            }
+            else
+            {
+                $verbose = @$trace["args"][$verboseParam->getPosition()]["verbose"] ?? ($verboseParam->isDefaultValueAvailable() ? $verboseParam->getDefaultValue() : false);
+            }            
 
             if($verbose)
             {
