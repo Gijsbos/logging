@@ -13,6 +13,16 @@ function cli_logf(string $message, ...$params)
     return sprintf("[".(new DateTime())->format("Y-m-d H:i:s")."] $message", ...$params);
 }
 
+function cli_log_print(string $message)
+{
+    echo(cli_log($message));
+}
+
+function cli_log_printf(string $message, ...$params)
+{
+    echo(cli_logf($message, ...$params));
+}
+
 function log_info(string $message)
 {
     LogWriter::write($message, "info");
