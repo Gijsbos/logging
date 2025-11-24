@@ -3,16 +3,26 @@ declare(strict_types=1);
 
 namespace gijsbos\Logging\Classes;
 
+use ArgumentCountError;
+use Error;
+
 /**
  * LogEnabledClass
+ *  Enables logging functions in classes.
+ *  Can also act as dynamic data storage for metadata.
  */
 class LogEnabledClass
 {
+    const MODE_DEFAULT = 0;
+    const MODE_METADATA = 1;
+
     public array $opts;
     public string $logLevel;
     public string $logOutput;
     public null|bool $verbose; // Null, no prefs, Bool = prefs
     public null|bool $debug; // Null, no prefs, Bool = prefs
+    public array $metadata;
+    public int $mode;
 
     public function __construct(array $opts = [])
     {
@@ -21,6 +31,8 @@ class LogEnabledClass
         $this->logOutput = @$opts["logOutput"] ?? "file";
         $this->verbose = @$opts["verbose"];
         $this->debug = @$opts["debug"];
+        $this->metadata = @$opts["metadata"] ?? [];
+        $this->mode = @$opts["mode"] ?? self::MODE_DEFAULT;
 
         if(is_bool($this->verbose))
             $this->setVerbose($this->verbose);
@@ -101,6 +113,16 @@ class LogEnabledClass
         return $this;
     }
 
+    public function getMetadata()
+    {
+        return $this->metadata;
+    }
+
+    public function setMetadata(array $metadata)
+    {
+        $this->metadata = $metadata;
+    }
+
     public function inheritLogSettingsFrom(LogEnabledClass $source)
     {
         $this->setLogLevel($source->getLogLevel());
@@ -125,5 +147,46 @@ class LogEnabledClass
     {
         $this->logOutput = $logOutput;
         return $this;
+    }
+
+    public function __call($name, $arguments)
+    {
+        if($this->mode !== self::MODE_METADATA && !method_exists($this, $name))
+            throw new Error("Call to undefined method ".get_called_class()."::".$name."()");
+
+        if(str_starts_with($name, "set"))
+        {
+            $variableName = lcfirst(substr($name, 3));
+
+            if(count($arguments) == 0)
+            {
+                $trace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS)[0];
+                $file = $trace["file"];
+                $line = $trace["line"];
+
+                // Needs one 'argument' or throws
+                throw new ArgumentCountError("Too few arguments to function ".get_called_class()."::".$name."(), 0 passed in $file on line $line and exactly 1 expected");
+            }
+
+            $this->metadata[$variableName] = $arguments[0];
+
+            return $this;
+        }
+
+        else if(str_starts_with($name, "get"))
+        {
+            $variableName = lcfirst(substr($name, 3));
+
+            return @$this->metadata[$variableName];
+        }
+
+        else if(str_starts_with($name, "has"))
+        {
+            $variableName = lcfirst(substr($name, 3));
+
+            return @$this->metadata[$variableName] !== null;
+        }
+        else
+            throw new Error("Call to undefined method ".get_called_class()."::".$name."()");
     }
 }
