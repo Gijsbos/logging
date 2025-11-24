@@ -34,6 +34,11 @@ class LogEnabledClass
         return $this->opts;
     }
 
+    public function setOpts(array $opts)
+    {
+        $this->opts = $opts;
+    }
+
     public function getLogLevel()
     {
         return $this->logLevel;
@@ -58,6 +63,8 @@ class LogEnabledClass
     {
         if(is_bool($verbose))
         {
+            $this->opts["verbose"] = $verbose;
+
             if($verbose)
             {
                 $this->logLevel = "info";
@@ -77,6 +84,8 @@ class LogEnabledClass
     {
         if(is_bool($debug))
         {
+            $this->opts["debug"] = $debug;
+
             if($debug)
             {
                 $this->logLevel = "debug";
