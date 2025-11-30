@@ -34,31 +34,39 @@ class LogWriter
     /**
      * getTrace
      */
-    private function getTrace()
+    private function getTrace() : false | array
     {
         foreach(($backtraces = debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT, 8)) as $i => $trace)
         {
             $function = @$trace["function"] ?? "";
 
             if(str_starts_with($function, "log_"))
+            {
+                if(!array_key_exists($i+1, $backtraces))
+                    return false;
+
                 return $backtraces[$i+1];
+            }
         }
-        return null;
+        return false;
     }
 
     /**
      * extractObjectLogParams
      */
-    private function extractObjectLogParams()
+    private function extractObjectLogParams() : array
     {
         $params = [];
 
         $trace = $this->getTrace();
 
+        if($trace == false) // No backtrace object
+            return $params;
+
         $object = @$trace["object"];
         $function = @$trace["function"];
         $className = @$trace["class"];
-        
+
         if($object === null)
         {
             $reflection = new ReflectionMethod($className, $function);
@@ -138,7 +146,7 @@ class LogWriter
                 )
             )
         ){
-            $print = "[".(new \DateTime())->format("Y-m-d H:i:s")."]";
+            $print = "";
 
             if(strlen($callingClass))
                 $print .= "[$callingClass]";
@@ -149,7 +157,7 @@ class LogWriter
             $print .= " $message\n";
 
             if($logOutput == "console")
-                print($print);
+                print(cli_log($print));
             else
                 $this->writeLogToFile($print, $type);
         }

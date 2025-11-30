@@ -5,12 +5,12 @@ use gijsbos\Logging\Classes\LogWriter;
 
 function cli_log(string $message)
 {
-    return "[".(new DateTime())->format("Y-m-d H:i:s")."] $message";
+    return "[".(new DateTime())->format("Y-m-d H:i:s")."]$message";
 }
 
 function cli_logf(string $message, ...$params)
 {
-    return sprintf("[".(new DateTime())->format("Y-m-d H:i:s")."] $message", ...$params);
+    return sprintf("[".(new DateTime())->format("Y-m-d H:i:s")."]$message", ...$params);
 }
 
 function cli_log_print(string $message)
