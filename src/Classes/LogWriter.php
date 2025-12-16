@@ -251,7 +251,7 @@ class LogWriter
             )
         ){
             if($logOutput == "console")
-                print($this->createLogMessage($type, $message, $callingClass));
+                print($this->createLogMessage($type, $message, $callingClass)."\n");
             else
                 $this->writeCollapsedLog($logOutputFile ?? "$type.log", $type, $message, $callingClass);
         }
