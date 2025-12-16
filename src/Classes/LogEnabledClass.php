@@ -19,6 +19,7 @@ class LogEnabledClass
     public array $opts;
     public string $logLevel;
     public string $logOutput;
+    public null|string $logOutputFile;
     public null|bool $verbose; // Null, no prefs, Bool = prefs
     public null|bool $debug; // Null, no prefs, Bool = prefs
     public array $metadata;
@@ -29,6 +30,7 @@ class LogEnabledClass
         $this->opts = $opts;
         $this->logLevel = @$opts["logLevel"] ?? "";
         $this->logOutput = @$opts["logOutput"] ?? "file";
+        $this->logOutputFile = @$opts["logOutputFile"];
         $this->verbose = @$opts["verbose"];
         $this->debug = @$opts["debug"];
         $this->metadata = @$opts["metadata"] ?? [];
@@ -146,6 +148,12 @@ class LogEnabledClass
     public function setLogOutput(string $logOutput)
     {
         $this->logOutput = $logOutput;
+        return $this;
+    }
+
+    public function setLogOutputFile(string $logOutputFile)
+    {
+        $this->logOutputFile = $logOutputFile;
         return $this;
     }
 
