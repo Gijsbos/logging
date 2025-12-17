@@ -102,7 +102,11 @@ class LogWriter
         // Match line
         if (preg_match($pattern, $line, $matches))
         {
-            [$match ,$lastTime, $lastSource, $lastType, $lastMessage, $count] = $matches;
+            $lastTime = $matches[1];
+            $lastSource = $matches[2];
+            $lastType = $matches[3];
+            $lastMessage = $matches[4];
+            $count = @$matches[5];
 
             if (
                 (strlen($lastType) > 0 && $lastSource === $source && $lastMessage === $message && $lastType === $type)
@@ -111,10 +115,10 @@ class LogWriter
             )
             {
                 // Same message → update line
-                $count = $count ? ((int)$count + 1) : 2;
+                $count = $count ? ((int) $count + 1) : 2;
                 $updatedLine = $this->createLogMessage($type, "$message (x$count)", $source);
 
-                // 🔧 Truncate at the *start of the last line*
+                // Truncate at the *start of the last line*
                 ftruncate($fp, $lastLineStart);
                 fseek($fp, $lastLineStart);
                 fwrite($fp, $updatedLine . PHP_EOL);
