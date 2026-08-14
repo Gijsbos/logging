@@ -77,6 +77,8 @@ class LogEnabledClass
     {
         if(is_bool($verbose))
         {
+            $this->verbose = $verbose;
+
             $this->opts["verbose"] = $verbose;
 
             if($verbose)
@@ -98,6 +100,7 @@ class LogEnabledClass
     {
         if(is_bool($debug))
         {
+            $this->debug = $debug;
             $this->opts["debug"] = $debug;
 
             if($debug)
